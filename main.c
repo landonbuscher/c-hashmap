@@ -48,8 +48,27 @@ map_node_t* hash_get(map_t* map, int key) {
     return NULL;
 }
 
+void hash_delete(map_t* map, int key) {
+    int index = hash(key);
+    map_node_t* curr = map->map_table[index];
+    map_node_t* prev = NULL;
+    while (curr!=NULL) {
+        if (curr->key==key) {
+            if (prev==NULL) {
+                map->map_table[index] = curr->next;
+            } else {
+                prev->next=curr->next;
+            }
+            free(curr);
+            return;
+        }
+        prev = curr;
+        curr = curr->next;
+    }
+}
+
 void hash_print(map_node_t* node) {
-    if (node==NULL) printf("---\n");
+    if (node==NULL) printf("NULL\n");
     else printf("%d\n",node->value);
 }
 
@@ -77,6 +96,8 @@ int main() {
     hash_print(hash_get(&map,5));
     hash_print(hash_get(&map,112));
     hash_print(hash_get(&map,1));
+    hash_print(hash_get(&map,9));
+    hash_delete(&map, 9);
     hash_print(hash_get(&map,9));
 
     hash_free(&map);
